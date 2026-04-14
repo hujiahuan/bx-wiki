@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <meta name="description" content="企业内部技术文档站" />
+  <meta name="theme-color" content="#42b983" />
+  <title>BX Wiki · 内部文档</title>
+  <!-- 避免 /favicon.ico 404 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2342b983'/%3E%3C/svg%3E" />
+  <!-- 国内 jsdelivr 易断流；npmmirror 为 npm 包同步镜像，路径：/packages/{name}/{version}/files/{path} -->
+  <link rel="dns-prefetch" href="https://cdn.npmmirror.com" />
+  <link rel="preconnect" href="https://cdn.npmmirror.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- 与下方 script src 完全一致（含 https），否则会出现 preload 未使用告警 -->
+  <link rel="preload" href="https://cdn.npmmirror.com/packages/docsify/4.13.1/files/lib/docsify.min.js" as="script" crossorigin />
+  <link rel="stylesheet" href="https://cdn.npmmirror.com/packages/docsify/4.13.1/files/lib/themes/vue.css" />
+  <link rel="stylesheet" href="assets/custom.css" />
+</head>
+<body>
+  <div id="app">加载中…</div>
+  <script>
+    window.$docsify = {
+      name: 'BX Wiki',
+      repo: '',
+      homepage: 'README.md',
+      loadSidebar: true,
+      loadNavbar: true,
+      /* loadNested 会在子目录请求 _navbar.md / _sidebar.md；统一用站点根目录那一份 */
+      alias: {
+        '.*\\/_navbar\\.md': '/_navbar.md',
+        '.*\\/_sidebar\\.md': '/_sidebar.md',
+      },
+      auto2top: true,
+      maxLevel: 4,
+      subMaxLevel: 2,
+      executeScript: true,
+      mergeNavbar: false,
+      notFoundPage: true,
+      externalLinkTarget: '_blank',
+      themeColor: '#42b983',
+      formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}',
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '搜索文档…',
+        noData: '未找到匹配内容',
+        depth: 3,
+        hideOtherSidebarContent: false,
+      },
+      pagination: {
+        previousText: '上一篇',
+        nextText: '下一篇',
+        crossChapter: true,
+        crossChapterText: true,
+      },
+      copyCode: {
+        buttonText: '复制',
+        errorText: '复制失败',
+        successText: '已复制',
+      },
+      mermaidConfig: {
+        querySelector: '.mermaid',
+        theme: 'default',
+      },
+      plugins: [
+        function lazyMermaid(hook) {
+          var loadPromise = null;
+          function ensureMermaid() {
+            if (window.mermaid) return Promise.resolve();
+            if (loadPromise) return loadPromise;
+            loadPromise = new Promise(function (resolve, reject) {
+              var s = document.createElement('script');
+              s.src =
+                'https://cdn.npmmirror.com/packages/mermaid/10.6.1/files/dist/mermaid.min.js';
+              s.crossOrigin = 'anonymous';
+              s.onload = function () {
+                try {
+                  window.mermaid.initialize({ startOnLoad: false, theme: 'default' });
+                } catch (e) {}
+                resolve();
+              };
+              s.onerror = function () {
+                loadPromise = null;
+                reject(new Error('mermaid load failed'));
+              };
+              document.head.appendChild(s);
+            });
+            return loadPromise;
+          }
+          hook.beforeEach(function (md, next) {
+            if (!md || md.indexOf('```mermaid') === -1) {
+              next(md);
+              return;
+            }
+            ensureMermaid().then(
+              function () {
+                next(md);
+              },
+              function () {
+                next(md);
+              }
+            );
+          });
+        },
+        function sidebarAccordion(hook) {
+          function hasSubmenu(li) {
+            if (!li) return false;
+            var uls = li.querySelectorAll(':scope > ul');
+            for (var i = 0; i < uls.length; i++) {
+              if (!uls[i].classList.contains('app-sub-sidebar')) return true;
+            }
+            return false;
+          }
+          function folderHeadEl(li) {
+            var el = li.firstElementChild;
+            while (el && el.tagName === 'UL') {
+              el = el.nextElementSibling;
+            }
+            return el;
+          }
+          function markFolders() {
+            document.querySelectorAll('.sidebar-nav li .bx-folder-head').forEach(function (n) {
+              n.classList.remove('bx-folder-head');
+            });
+            document.querySelectorAll('.sidebar-nav li').forEach(function (li) {
+              if (hasSubmenu(li)) {
+                li.classList.add('bx-folder');
+                var head = folderHeadEl(li);
+                if (head) head.classList.add('bx-folder-head');
+              } else {
+                li.classList.remove('bx-folder', 'bx-open');
+              }
+            });
+          }
+          /**
+           * Docsify 对侧栏调用 getAndActive(..., isParent=true) 时，active 在 li 上而非 a 上。
+           * 仅用 a.active 会永远取不到节点，导致展开逻辑整段失效、菜单全合上。
+           */
+          function getSidebarActiveMarker() {
+            return (
+              document.querySelector('.sidebar-nav li.active') ||
+              document.querySelector('.sidebar-nav a.active')
+            );
+          }
+          /** 含当前高亮链路的文件夹：只 add，不从深层 remove，避免子菜单跳转时折叠态被清掉 */
+          function ensureAncestorsOpen() {
+            var marker = getSidebarActiveMarker();
+            if (!marker) return;
+            document.querySelectorAll('.sidebar-nav li.bx-folder').forEach(function (folderLi) {
+              if (folderLi.contains(marker)) folderLi.classList.add('bx-open');
+            });
+          }
+          /** 仅根下「一级」分组互斥：当前页不在该一级下则收起该一级（不碰其内部已展开的子分组 class） */
+          function syncRootLevelExclusive() {
+            var nav = document.querySelector('.sidebar-nav');
+            if (!nav) return;
+            var rootUl = nav.querySelector(':scope > ul');
+            if (!rootUl) return;
+            var marker = getSidebarActiveMarker();
+            if (!marker) return;
+            rootUl.querySelectorAll(':scope > li.bx-folder').forEach(function (topLi) {
+              if (topLi.contains(marker)) {
+                topLi.classList.add('bx-open');
+              } else {
+                topLi.classList.remove('bx-open');
+              }
+            });
+          }
+          function applySidebarOpenState() {
+            ensureAncestorsOpen();
+            syncRootLevelExclusive();
+          }
+          function bindOnce() {
+            var nav = document.querySelector('.sidebar-nav');
+            if (!nav || nav._bxAccordionBound) return;
+            nav._bxAccordionBound = true;
+            nav.addEventListener('click', function (e) {
+              var li = e.target.closest('.sidebar-nav li.bx-folder');
+              if (!li) return;
+              var sub = li.querySelector(':scope > ul:not(.app-sub-sidebar)');
+              if (!sub) return;
+              if (sub.contains(e.target) && e.target.closest('a')) return;
+              var head = li.querySelector(':scope > .bx-folder-head');
+              if (!head || !head.contains(e.target)) return;
+              e.preventDefault();
+              e.stopPropagation();
+              var rootUl = nav.querySelector(':scope > ul');
+              var isTopLevel = rootUl && li.parentElement === rootUl && hasSubmenu(li);
+              var wasOpen = li.classList.contains('bx-open');
+              if (isTopLevel && !wasOpen) {
+                rootUl.querySelectorAll(':scope > li.bx-folder').forEach(function (sib) {
+                  if (sib !== li) sib.classList.remove('bx-open');
+                });
+              }
+              li.classList.toggle('bx-open');
+            });
+          }
+          function run() {
+            markFolders();
+            bindOnce();
+            applySidebarOpenState();
+            requestAnimationFrame(function () {
+              requestAnimationFrame(applySidebarOpenState);
+            });
+          }
+          hook.ready(function () {
+            setTimeout(run, 0);
+          });
+          hook.doneEach(function () {
+            setTimeout(run, 0);
+          });
+        },
+      ],
+    };
+  </script>
+  <script src="https://cdn.npmmirror.com/packages/docsify-mermaid/2.0.1/files/dist/docsify-mermaid.js"></script>
+  <script src="https://cdn.npmmirror.com/packages/docsify/4.13.1/files/lib/docsify.min.js"></script>
+  <script src="https://cdn.npmmirror.com/packages/docsify/4.13.1/files/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.npmmirror.com/packages/docsify-copy-code/2.1.1/files/dist/docsify-copy-code.min.js"></script>
+  <script src="https://cdn.npmmirror.com/packages/docsify/4.13.1/files/lib/plugins/zoom-image.min.js"></script>
+  <script src="https://cdn.npmmirror.com/packages/docsify-pagination/2.10.1/files/dist/docsify-pagination.min.js"></script>
+</body>
+</html>

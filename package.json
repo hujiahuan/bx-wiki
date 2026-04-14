@@ -1,0 +1,16 @@
+{
+  "name": "bx-wiki",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "serve": "docsify serve docs",
+    "start": "docsify serve docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "docsify-cli": "^4.4.4"
+  }
+}

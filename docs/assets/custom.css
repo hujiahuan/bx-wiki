@@ -1,0 +1,151 @@
+/**
+ * 多主题共用：跟随各主题自带的 --theme-color；用 html[data-bx-theme] 做少量适配
+ */
+
+body {
+  font-family:
+    "Source Sans Pro",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+}
+
+/* Pure / 极简主题下 Source Sans 可能未加载，回退更稳 */
+html[data-bx-theme="pure"] body {
+  font-family: "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+html[data-bx-theme="dolphin"] body {
+  font-family: Thasadith, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.sidebar > h1 {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-nav li > p {
+  font-weight: 700;
+  margin: 0.75em 0 0.35em;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: inherit;
+  opacity: 0.92;
+}
+
+/* 分组折叠：任意层级，只要有子 ul 即可折叠（.bx-folder-head 为首个非 ul 子节点） */
+.sidebar-nav li.bx-folder:not(.bx-open) > ul:not(.app-sub-sidebar) {
+  display: none !important;
+}
+
+.sidebar-nav li.bx-folder > .bx-folder-head {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 1.25rem;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-nav li.bx-folder > .bx-folder-head:hover {
+  color: var(--theme-color, #42b983);
+  opacity: 1;
+}
+
+.sidebar-nav li.bx-folder > .bx-folder-head::after {
+  content: "";
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  width: 0.35em;
+  height: 0.35em;
+  margin-top: -0.2em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.4;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-nav li.bx-folder.bx-open > .bx-folder-head::after {
+  transform: rotate(-135deg);
+  margin-top: 0;
+  opacity: 0.55;
+}
+
+.markdown-section {
+  max-width: 46rem;
+  padding-top: 2.5rem;
+}
+
+.markdown-section > h1:first-child {
+  margin-top: 0;
+}
+
+.markdown-section p,
+.markdown-section li {
+  line-height: 1.75;
+}
+
+.markdown-section pre > code {
+  border-radius: 4px;
+}
+
+.app-nav {
+  margin-top: 22px;
+}
+
+/* ---------- 顶栏主题切换 ---------- */
+nav.app-nav .bx-theme-wrap {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 0 1rem;
+  padding: 4px 0;
+}
+
+.bx-theme-label {
+  font-size: 14px;
+  margin-right: 6px;
+  opacity: 0.75;
+  cursor: default;
+}
+
+.bx-theme-select {
+  font: inherit;
+  font-size: 14px;
+  padding: 4px 28px 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #34495e;
+  cursor: pointer;
+  min-width: 9.5rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M3 4.5L6 8l3-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+html[data-bx-theme="dark"] .bx-theme-select {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(40, 40, 40, 0.95);
+  color: #ddd;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cbd5e1' d='M3 4.5L6 8l3-3.5'/%3E%3C/svg%3E");
+}
+
+/* ---------- 分页（暗色主题边框） ---------- */
+.pagination-item a {
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.pagination-item a:hover {
+  border-color: var(--theme-color, #42b983) !important;
+}
+
+html[data-bx-theme="dark"] .pagination-item a {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
