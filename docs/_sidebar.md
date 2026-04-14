@@ -6,17 +6,6 @@
   * [技术选型与约束](internal/tech-stack.md)
   * [安全与合规](internal/security.md)
 
-* **千人千面（一期）**
-  * [总览与阅读顺序](recommend/README.md)
-  * **架构**
-    * [一期边界与关键决策](recommend/architecture/phase1-boundaries-and-key-decisions.md)
-    * [推荐系统总体架构](recommend/architecture/recommend-platform-architecture.md)
-    * [数据同步与身份归因](recommend/architecture/data-sync-and-identity-attribution.md)
-  * **实施**
-    * [实施清单与里程碑](recommend/implementation/implementation-checklist-and-milestones.md)
-  * **规范**
-    * [工程与治理规范](recommend/standards/engineering-and-governance.md)
-
 * **开发手册**
   * [本地开发环境](dev/environment.md)
   * [工程结构与规范](dev/project-structure.md)
@@ -45,3 +34,19 @@
   * [日志与审计](ops/logging.md)
   * [备份与恢复](ops/backup.md)
   * [故障应急 Runbook](ops/incident.md)
+
+* **千人千面（一期）**
+  * [总览与阅读顺序](recommend/README.md)
+  * **架构**
+    * [一期边界与关键决策](recommend/architecture/phase1-boundaries-and-key-decisions.md)
+    * [推荐系统总体架构](recommend/architecture/recommend-platform-architecture.md)
+    * [数据同步与身份归因](recommend/architecture/data-sync-and-identity-attribution.md)
+  * **实施**
+    * [实施清单与里程碑](recommend/implementation/implementation-checklist-and-milestones.md)
+  * **规范**
+    * [工程与治理规范](recommend/standards/engineering-and-governance.md)
+
+* **三只熊**
+  * [个性化推荐系统 PRD](three-bears/personalized-recommendation-prd.md)
+  * [搜索结果优化 PRD（20260407）](three-bears/search-results-optimization-prd-20260407.md)
+
