@@ -410,17 +410,3 @@ MVP 目标：
 - 托管云资源供应商
 - 首页与搜索的产品规则
 
-## 本轮已完成的实施准备
-
-- 仓库骨架目录已建立
-- 方案文档已按架构、规范、同步、实施拆分
-
-## 下一步建议
-
-确认本清单后，下一轮直接进入：
-
-1. 根 `go.mod` 与 Monorepo 基础脚手架
-2. `pkg/config`、`pkg/observability`、`pkg/auth` 公共包初始化
-3. `recommend-bff`、`event-collector`、`user-profile-service` 首批服务脚手架
-4. 首批 `proto` 与 `OpenAPI` 契约文件
-5. K8s 基础部署模板
