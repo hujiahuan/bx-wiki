@@ -129,7 +129,137 @@
 
 ## 4. 用户端接口
 
-## 4.1 获取订单可退押金信息
+## 4.1 可退押金订单列表
+
+- 路径：`/api/Basket/getEligibleBasketReturnOrders`
+- 方法：`GET`
+- 鉴权：需要用户 `Token`
+- 用途：列出当前用户 **仍有可退数量** 的已完成订单；每条记录中业务字段与 `getOrderBasketReturnInfo` 成功时 **单条 `data` 结构一致**（含 `deposit_types`、`goods`、联系人、地址等），并额外包含 `shop_id`、`shop_name`、`created_time`、`complete_time`（Unix 秒），便于列表页直接展示。
+- 排序：按订单 `complete_time` 倒序，其次 `id` 倒序。
+
+请求参数：
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `page` | int | 否 | 页码，默认 `1` |
+| `page_size` | int | 否 | 每页条数，默认 `10`，最大 `50` |
+
+成功返回 `data` 结构（与 ThinkPHP 分页字段对齐，便于列表组件使用）：
+
+```json
+{
+  "data": [
+    {
+      "order_id": 12345,
+      "order_no": "S202604140001",
+      "shop_id": 1,
+      "shop_name": "西湖鲜蛋铺",
+      "created_time": 1776000000,
+      "complete_time": 1776100000,
+      "deposit_types": [
+        {
+          "deposit_type": 1,
+          "name": "鸡蛋筐",
+          "max_basket_count": 2,
+          "unit_deposit_price": "15.00",
+          "max_refund_amount": "30.00",
+          "goods": [
+            {
+              "order_goods_id": 1001,
+              "goods_id": 501,
+              "goods_name": "鲜鸡蛋",
+              "sku_title": "30枚/框",
+              "deposit_type": 1,
+              "eligible_basket_count": 2,
+              "unit_deposit_price": "15.00",
+              "cover": "https://oss.example.com/img/20260429/egg.jpg"
+            }
+          ]
+        },
+        {
+          "deposit_type": 2,
+          "name": "豆腐框",
+          "max_basket_count": 1,
+          "unit_deposit_price": "10.00",
+          "max_refund_amount": "10.00",
+          "goods": [
+            {
+              "order_goods_id": 1002,
+              "goods_id": 502,
+              "goods_name": "豆腐",
+              "sku_title": "整箱",
+              "deposit_type": 2,
+              "eligible_basket_count": 1,
+              "unit_deposit_price": "10.00",
+              "cover": "https://oss.example.com/img/20260429/tofu.jpg"
+            }
+          ]
+        }
+      ],
+      "eligible_basket_count": 3,
+      "unit_deposit_price": "15.00",
+      "max_refund_amount": "40.00",
+      "contact_name": "张三",
+      "contact_tel": "13800000000",
+      "pickup_address_id": 88,
+      "pickup_address": "杭州市西湖区古墩路xxx",
+      "goods": [
+        {
+          "order_goods_id": 1001,
+          "goods_id": 501,
+          "goods_name": "鲜鸡蛋",
+          "sku_title": "30枚/框",
+          "deposit_type": 1,
+          "eligible_basket_count": 2,
+          "unit_deposit_price": "15.00",
+          "cover": "https://oss.example.com/img/20260429/egg.jpg"
+        },
+        {
+          "order_goods_id": 1002,
+          "goods_id": 502,
+          "goods_name": "豆腐",
+          "sku_title": "整箱",
+          "deposit_type": 2,
+          "eligible_basket_count": 1,
+          "unit_deposit_price": "10.00",
+          "cover": "https://oss.example.com/img/20260429/tofu.jpg"
+        }
+      ]
+    }
+  ],
+  "total": 1,
+  "per_page": 10,
+  "current_page": 1,
+  "last_page": 1,
+  "meta": {
+    "empty_reason": null,
+    "completed_order_count": 5
+  }
+}
+```
+
+字段说明（与 `getOrderBasketReturnInfo` 单条 `data` 一致）：
+
+- **`goods`**：订单维度扁平列表，便于列表页一行展示多商品。
+- **`deposit_types[].goods`**：按押金类型分组后的商品明细，与单订单接口相同。
+- 每条商品明细含 **`cover`**：主图完整 URL；优先订单行 `order_goods.cover` 快照，否则取 `product.cover` 逗号分隔中的第一张；无图为空字符串 `""`。
+
+`meta.empty_reason`（仅当 **`total === 0`** 时有意义，用于区分空列表文案）：
+
+| 值 | 含义（建议前端文案方向） |
+| --- | --- |
+| `no_completed_orders` | 没有「已完成且已支付」的订单 |
+| `no_deposit_container` | 有已完成订单，但订单内没有标记为押金商品（`product.is_deposit=1`）的行 |
+| `nothing_left` | 有押金商品，但当前已无可退数量（均已申请/占用完毕） |
+
+当 `total > 0` 时，`empty_reason` 为 `null`。
+
+说明：
+
+- 列表中的 `deposit_types` / `goods` 与单订单接口一致，申请页可直接复用或再调 `getOrderBasketReturnInfo` 二次确认。
+- `completed_order_count` 为「已完成且已支付」订单总数，用于与「可退条数为 0」对照展示。
+
+## 4.2 获取订单可退押金信息
 
 - 路径：`/api/Basket/getOrderBasketReturnInfo`
 - 方法：`GET`
@@ -163,7 +293,8 @@
           "sku_title": "30枚/框",
           "deposit_type": 1,
           "eligible_basket_count": 2,
-          "unit_deposit_price": "15.00"
+          "unit_deposit_price": "15.00",
+          "cover": "https://oss.example.com/img/20260429/egg.jpg"
         }
       ]
     },
@@ -181,7 +312,8 @@
           "sku_title": "整箱",
           "deposit_type": 2,
           "eligible_basket_count": 1,
-          "unit_deposit_price": "10.00"
+          "unit_deposit_price": "10.00",
+          "cover": "https://oss.example.com/img/20260429/tofu.jpg"
         }
       ]
     }
@@ -201,7 +333,8 @@
       "sku_title": "30枚/框",
       "deposit_type": 1,
       "eligible_basket_count": 2,
-      "unit_deposit_price": "15.00"
+      "unit_deposit_price": "15.00",
+      "cover": "https://oss.example.com/img/20260429/egg.jpg"
     },
     {
       "order_goods_id": 1002,
@@ -210,7 +343,8 @@
       "sku_title": "整箱",
       "deposit_type": 2,
       "eligible_basket_count": 1,
-      "unit_deposit_price": "10.00"
+      "unit_deposit_price": "10.00",
+      "cover": "https://oss.example.com/img/20260429/tofu.jpg"
     }
   ]
 }
@@ -227,6 +361,8 @@
   - 当前订单该类型还可申请的最大数量
 - `goods`
   - 该类型对应的商品明细
+- `goods[].cover`
+  - 商品主图完整 URL；优先 `order_goods.cover`，否则 `product.cover` 首张；无图为 `""`
 - `eligible_basket_count`
   - 全部类型合计还可退数量，仅适合做摘要，不适合做具体提交校验
 - `unit_deposit_price` / `max_refund_amount`
@@ -241,7 +377,7 @@
 - `订单未完成，暂不能退押金容器`
 - `当前订单无可退押金`
 
-## 4.2 提交押金回收申请
+## 4.3 提交押金回收申请
 
 - 路径：`/api/Basket/createBasketReturn`
 - 方法：`POST`
@@ -346,7 +482,7 @@
 - `押金类型无效或已停用`
 - `联系人、电话、取货地址不能为空`
 
-## 4.3 获取押金单列表
+## 4.4 获取押金单列表
 
 - 路径：`/api/Basket/getBasketReturnList`
 - 方法：`GET`
@@ -424,7 +560,7 @@
 - 当前用户列表接口不保证返回 `deposit_type_name`
 - 如需要类型名，前端请基于 `deposit_type` 本地映射
 
-## 4.4 获取押金单详情
+## 4.5 获取押金单详情
 
 - 路径：`/api/Basket/getBasketReturnDetail`
 - 方法：`GET`
@@ -467,7 +603,7 @@
 - `缺少回收单ID`
 - `回收单不存在`
 
-## 4.5 取消押金单
+## 4.6 取消押金单
 
 - 路径：`/api/Basket/cancelBasketReturn`
 - 方法：`POST`
@@ -750,8 +886,8 @@
 
 ### 6.1 用户端
 
-1. 列表页先拉订单列表
-2. 进入申请页时调 `getOrderBasketReturnInfo`
+1. 可退押金订单列表页调 `getEligibleBasketReturnOrders`（或进入申请前再调 `getOrderBasketReturnInfo` 二次拉齐）
+2. 进入申请页时调 `getOrderBasketReturnInfo`（可选：列表项已含相同结构时可仅在下拉刷新时调用）
 3. 根据 `deposit_types` 渲染每种押金类型的输入行
 4. 组装 `returns` 后调 `createBasketReturn`
 5. 我的回收单列表调 `getBasketReturnList`
