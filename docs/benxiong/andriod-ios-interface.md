@@ -163,48 +163,6 @@
           "max_basket_count": 2,
           "unit_deposit_price": "15.00",
           "max_refund_amount": "30.00",
-          "goods": [
-            {
-              "order_goods_id": 1001,
-              "goods_id": 501,
-              "goods_name": "鲜鸡蛋",
-              "sku_title": "30枚/框",
-              "deposit_type": 1,
-              "eligible_basket_count": 2,
-              "unit_deposit_price": "15.00",
-              "cover": "https://oss.example.com/img/20260429/egg.jpg"
-            }
-          ]
-        },
-        {
-          "deposit_type": 2,
-          "name": "豆腐框",
-          "max_basket_count": 1,
-          "unit_deposit_price": "10.00",
-          "max_refund_amount": "10.00",
-          "goods": [
-            {
-              "order_goods_id": 1002,
-              "goods_id": 502,
-              "goods_name": "豆腐",
-              "sku_title": "整箱",
-              "deposit_type": 2,
-              "eligible_basket_count": 1,
-              "unit_deposit_price": "10.00",
-              "cover": "https://oss.example.com/img/20260429/tofu.jpg"
-            }
-          ]
-        }
-      ],
-      "eligible_basket_count": 3,
-      "unit_deposit_price": "15.00",
-      "max_refund_amount": "40.00",
-      "contact_name": "张三",
-      "contact_tel": "13800000000",
-      "pickup_address_id": 88,
-      "pickup_address": "杭州市西湖区古墩路xxx",
-      "goods": [
-        {
           "order_goods_id": 1001,
           "goods_id": 501,
           "goods_name": "鲜鸡蛋",
@@ -215,6 +173,11 @@
           "cover": "https://oss.example.com/img/20260429/egg.jpg"
         },
         {
+          "deposit_type": 2,
+          "name": "豆腐框",
+          "max_basket_count": 1,
+          "unit_deposit_price": "10.00",
+          "max_refund_amount": "10.00",
           "order_goods_id": 1002,
           "goods_id": 502,
           "goods_name": "豆腐",
@@ -224,7 +187,14 @@
           "unit_deposit_price": "10.00",
           "cover": "https://oss.example.com/img/20260429/tofu.jpg"
         }
-      ]
+      ],
+      "eligible_basket_count": 3,
+      "unit_deposit_price": "15.00",
+      "max_refund_amount": "40.00",
+      "contact_name": "张三",
+      "contact_tel": "13800000000",
+      "pickup_address_id": 88,
+      "pickup_address": "杭州市西湖区古墩路xxx",
     }
   ],
   "total": 1,
