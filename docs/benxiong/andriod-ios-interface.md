@@ -156,6 +156,8 @@
       "shop_name": "西湖鲜蛋铺",
       "created_time": 1776000000,
       "complete_time": 1776100000,
+      "status": 2,
+      "status_name": "待司机取回",
       "deposit_types": [
         {
           "deposit_type": 1,
