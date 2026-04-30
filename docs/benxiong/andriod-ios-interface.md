@@ -384,7 +384,7 @@
   "return_no": "BK202604141430001234",
   "status": 2,
   "status_name": "待司机取回",
-  "max_refund_amount": "3",
+  "eligible_basket_count": 3,
   "rider_id": 9,
   "rider_name": "张师傅",
   "assign_notice": "已自动分配原配送司机"
