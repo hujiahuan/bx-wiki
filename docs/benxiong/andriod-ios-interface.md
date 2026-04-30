@@ -326,10 +326,10 @@
 | `returns` | string / array | 推荐 | 多类型提交内容。推荐传 JSON 字符串 |
 | `deposit_type` | int | 否 | 兼容旧版单类型提交时使用 |
 | `basket_count` | int | 否 | 兼容旧版单类型提交时使用 |
-| `contact_name` | string | 否 | 联系人，不传则默认取订单地址联系人 |
-| `contact_tel` | string | 否 | 联系电话，不传则默认取订单地址电话 |
+| `contact_name` | string | 是 | 联系人，不传则默认取订单地址联系人 |
+| `contact_tel` | string | 是 | 联系电话，不传则默认取订单地址电话 |
 | `pickup_address_id` | int | 否 | 取货地址 ID |
-| `pickup_address` | string | 否 | 取货地址文本，不传则默认取订单地址 |
+| `pickup_address` | string | 是 | 取货地址文本，不传则默认取订单地址 |
 | `appointment_time` | int | 否 | 预约取货时间，Unix 时间戳 |
 | `remark` | string | 否 | 用户备注 |
 
@@ -384,6 +384,7 @@
   "return_no": "BK202604141430001234",
   "status": 2,
   "status_name": "待司机取回",
+  "max_refund_amount": "3",
   "rider_id": 9,
   "rider_name": "张师傅",
   "assign_notice": "已自动分配原配送司机"
