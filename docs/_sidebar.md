@@ -49,6 +49,19 @@
 * **三只熊**
   * [个性化推荐系统 PRD](three-bears/personalized-recommendation-prd.md)
   * [搜索结果优化 PRD（20260407）](three-bears/search-results-optimization-prd-20260407.md)
+  * **产品规划**
+    * [首页功能优化](three-bears/product/01_homepage-optimization.md)
+    * [千人千面策略及实施步骤](three-bears/product/02_personalized-recommendation-strategy.md)
+    * [埋点及指标](three-bears/product/03_tracking-and-metrics.md)
+    * [标签体系](three-bears/product/04-tag-system.md)
+    * [客户画像表结构设计](three-bears/product/05_customer-profile-schema.md)
+    * [商品标签及策略](three-bears/product/06_product-tags-strategy.md)
+    * [埋点数据存储表结构](three-bears/product/07_tracking-data-schema.md)
+    * [数据存储方案探讨](three-bears/product/08_data-storage-solution.md)
+    * [客户信息及标签示例](three-bears/product/09_customer-info-examples.md)
+    * [标签逻辑示例](three-bears/product/10-tag-logic-examples.md)
+    * [未来价格处理方案](three-bears/product/11-pricing-strategy.md)
+  * **文档**
 
 * **三只熊IOS**
   
