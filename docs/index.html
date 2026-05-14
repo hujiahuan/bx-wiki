@@ -105,6 +105,55 @@
             );
           });
         },
+        /** Mermaid 流程图：点击 SVG 在弹层中放大查看（正文区仍保持窄列排版） */
+        function mermaidZoomDialog(hook) {
+          var dialogEl = null;
+          function ensureDialog() {
+            if (dialogEl) return dialogEl;
+            dialogEl = document.createElement('dialog');
+            dialogEl.className = 'bx-mermaid-zoom-dialog';
+            dialogEl.setAttribute('aria-label', '流程图放大预览');
+            dialogEl.innerHTML =
+              '<div class="bx-mermaid-zoom-toolbar">' +
+              '<button type="button" class="bx-mermaid-zoom-close" aria-label="关闭">×</button></div>' +
+              '<div class="bx-mermaid-zoom-body"></div>';
+            document.body.appendChild(dialogEl);
+            dialogEl.querySelector('.bx-mermaid-zoom-close').addEventListener('click', function () {
+              dialogEl.close();
+            });
+            dialogEl.addEventListener('click', function (e) {
+              if (e.target === dialogEl) dialogEl.close();
+            });
+            return dialogEl;
+          }
+          function bindMermaidZoom() {
+            document.querySelectorAll('.markdown-section .mermaid svg').forEach(function (svg) {
+              if (svg.dataset.bxZoomBound === '1') return;
+              svg.dataset.bxZoomBound = '1';
+              svg.setAttribute('title', '点击放大查看');
+              svg.style.cursor = 'zoom-in';
+              svg.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var d = ensureDialog();
+                var body = d.querySelector('.bx-mermaid-zoom-body');
+                body.innerHTML = '';
+                body.appendChild(svg.cloneNode(true));
+                if (typeof d.showModal === 'function') {
+                  d.showModal();
+                }
+              });
+            });
+          }
+          hook.doneEach(function () {
+            bindMermaidZoom();
+            requestAnimationFrame(function () {
+              requestAnimationFrame(bindMermaidZoom);
+            });
+            setTimeout(bindMermaidZoom, 120);
+            setTimeout(bindMermaidZoom, 450);
+          });
+        },
         function sidebarAccordion(hook) {
           function hasSubmenu(li) {
             if (!li) return false;

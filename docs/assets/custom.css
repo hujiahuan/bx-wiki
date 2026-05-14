@@ -96,6 +96,90 @@ html[data-bx-theme="dolphin"] body {
   border-radius: 4px;
 }
 
+/* ---------- Mermaid：不因正文窄列强行缩小；可横向滚动；点击放大见 index.html 插件 ---------- */
+.markdown-section .mermaid {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1rem 0;
+  padding: 0.35rem 0 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  text-align: left;
+}
+
+.markdown-section .mermaid svg {
+  /* Mermaid 默认常带 max-width:100%，宽图会被压糊 */
+  max-width: none !important;
+  height: auto !important;
+  display: block;
+}
+
+/* 点击放大弹层 */
+.bx-mermaid-zoom-dialog {
+  box-sizing: border-box;
+  width: min(96vw, 1400px);
+  max-height: 92vh;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.28);
+  background: #fff;
+  color: #2c3e50;
+}
+
+html[data-bx-theme="dark"] .bx-mermaid-zoom-dialog {
+  background: #1e1e1e;
+  color: #e2e8f0;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+}
+
+.bx-mermaid-zoom-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.bx-mermaid-zoom-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 8px 0;
+  gap: 8px;
+}
+
+.bx-mermaid-zoom-close {
+  font: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.06);
+  color: inherit;
+}
+
+html[data-bx-theme="dark"] .bx-mermaid-zoom-close {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bx-mermaid-zoom-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+html[data-bx-theme="dark"] .bx-mermaid-zoom-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.bx-mermaid-zoom-body {
+  overflow: auto;
+  max-height: calc(92vh - 2.75rem);
+  padding: 4px 12px 14px;
+}
+
+.bx-mermaid-zoom-body svg {
+  max-width: none !important;
+  height: auto !important;
+}
+
 .app-nav {
   margin-top: 22px;
 }
